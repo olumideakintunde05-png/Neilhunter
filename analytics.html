@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analytics — NeilHunter</title>
+  <link rel="stylesheet" href="style.css"/>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D89GTNK2C9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-D89GTNK2C9');
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  
+  <link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon.png">
+<meta name="theme-color" content="#0d1f1a">
+</head>
+<body class="dark">
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside id="nh-sidebar">
+  <button class="sb-toggle" onclick="sbToggleCollapse()" title="Collapse sidebar">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <a href="dashboard.html" class="sb-logo">
+    <div class="sb-logo-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </div>
+    <span class="sb-logo-text">NeilHunter</span>
+  </a>
+  <div class="sb-logout-wrap">
+    <button class="sb-logout-btn" onclick="nhLogout()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      <span class="sb-lbl">Sign out</span>
+    </button>
+  </div>
+  <hr class="sb-divider"/>
+  <nav class="sb-nav">
+    <a href="dashboard.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <span class="sb-lbl">Search Leads</span>
+    </a>
+    <a href="analytics.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span class="sb-lbl">Analytics</span>
+    </a>
+    <a href="pricing.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <span class="sb-lbl">Upgrade Plan</span>
+    </a>
+    <a href="profile.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span class="sb-lbl">Profile</span>
+    </a>
+  </nav>
+  <div id="sb-plan-badge" class="sb-plan">FREE Plan</div>
+  <div class="sb-user">
+    <a href="profile.html" style="text-decoration:none;color:inherit">
+      <div class="sb-user-name" id="sb-user-name">—</div>
+      <div class="sb-user-email" id="sb-user-email">—</div>
+    </a>
+  </div>
+</aside>
+<div id="nh-overlay" onclick="sbCloseMobile()"></div>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<div id="nh-main">
+  <div class="nh-topbar">
+    <div class="nh-topbar-left">
+      <button id="sb-hamburger" onclick="sbOpenMobile()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span style="font-size:15px;font-weight:500;color:var(--text-soft)">Analytics</span>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
+
+  <div class="nh-page">
+    <div class="page-title">Analytics</div>
+    <div class="page-sub">Your search history and usage overview</div>
+
+    <!-- Usage card -->
+    <div class="nh-card" style="margin-bottom:16px">
+      <div class="nh-card-head">Daily Search Usage</div>
+      <div style="padding:20px">
+        <div class="usage-label">
+          <span id="usageText">0 / 10 searches used today</span>
+          <span id="usagePct" style="font-family:var(--font-mono);font-size:13px;color:var(--accent)">0%</span>
+        </div>
+        <div class="usage-track">
+          <div class="usage-fill" id="usageFill" style="width:0%"></div>
+        </div>
+        <p style="font-size:12px;color:var(--text-soft);margin-top:8px" id="usageNote">Resets daily at midnight</p>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="stats-row" style="margin-bottom:16px" id="overviewStats">
+      <div class="stat-card blue">
+        <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+        <div><div class="stat-val" id="totalSearches">0</div><div class="stat-lbl">Total Searches</div></div>
+      </div>
+      <div class="stat-card teal">
+        <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div><div class="stat-val" id="totalBiz">0</div><div class="stat-lbl">Businesses Found</div></div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div><div class="stat-val" id="totalHot">0</div><div class="stat-lbl">Hot Leads Found</div></div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+        <div><div class="stat-val" id="planLimit">10</div><div class="stat-lbl">Daily Search Limit</div></div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="nh-card">
+      <div class="nh-card-head" style="display:flex;align-items:center;justify-content:space-between">
+        Search History
+        <button onclick="clearHistory()" style="font-size:12px;color:var(--text-soft);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:var(--r);transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-soft)'">Clear history</button>
+      </div>
+      <div id="historyList">
+        <div style="padding:40px;text-align:center;color:var(--text-soft);font-size:14px">
+          No searches yet. <a href="dashboard.html" style="color:var(--accent)">Start searching →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="auth.js"></script>
+<script src="toast.js"></script>
+<script src="sidebar.js"></script>
+<script>
+  var session = { plan: 'FREE', id: null };
+
+  Auth.requireAuth().then(function(user) {
+    session = { id: user.uid, email: user.email, name: user.displayName, plan: Auth.getPlan(user.uid) };
+    sbPopulateUser(user);
+    if (localStorage.getItem('nh_theme') === 'light') document.body.classList.replace('dark','light');
+    loadAnalytics();
+  });
+
+  function toggleTheme() {
+    const light = document.body.classList.contains('light');
+    document.body.classList.toggle('dark', light);
+    document.body.classList.toggle('light', !light);
+    localStorage.setItem('nh_theme', light ? 'dark' : 'light');
+  }
+
+  function loadAnalytics() {
+    // Usage
+    var limits = { FREE:10, STARTER:200, PRO:Infinity };
+    var limit  = limits[session.plan] || 10;
+    var todayKey = 'nh_searches_' + session.id + '_' + new Date().toDateString();
+    var count  = parseInt(localStorage.getItem(todayKey) || '0');
+    const pct    = limit === Infinity ? 0 : Math.round((count/limit)*100);
+
+    document.getElementById('usageFill').style.width = pct + '%';
+    document.getElementById('usagePct').textContent  = limit === Infinity ? '∞' : pct + '%';
+    document.getElementById('usageText').textContent = limit === Infinity
+      ? `${count} searches used today (Unlimited)`
+      : `${count} / ${limit} searches used today`;
+    document.getElementById('planLimit').textContent = limit === Infinity ? '∞' : limit;
+    if (session.plan === 'FREE') {
+      document.getElementById('usageNote').innerHTML = 'On the FREE plan. <a href="pricing.html" style="color:var(--accent)">Upgrade for more searches →</a>';
+    }
+
+    // History
+    const history = JSON.parse(localStorage.getItem('nh_history_' + session.id) || '[]');
+    document.getElementById('totalSearches').textContent = history.length;
+    document.getElementById('totalBiz').textContent = history.reduce((s,h)=>s+(h.total||0),0);
+    document.getElementById('totalHot').textContent = history.reduce((s,h)=>s+(h.hot||0),0);
+
+    const list = document.getElementById('historyList');
+    if (!history.length) return;
+    list.innerHTML = history.slice(0,20).map(h => {
+      const d    = new Date(h.date);
+      const date = d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      const time = d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      return `<div class="history-row">
+        <div>
+          <div style="font-weight:500">${h.type} in ${h.city}</div>
+          <div class="h-meta">${date} at ${time}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="h-badge found">${h.total} found</span>
+          ${h.hot>0?`<span class="h-badge hot">🔥 ${h.hot} hot</span>`:''}
+          <a href="dashboard.html" onclick="localStorage.setItem('nh_prefill',JSON.stringify({type:'${h.type}',city:'${h.city}'}))" style="font-size:12px;color:var(--accent);cursor:pointer">Re-run →</a>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function clearHistory() {
+    if (!confirm('Clear all search history?')) return;
+    localStorage.removeItem('nh_history_' + session.id);
+    loadAnalytics();
+    toast('History cleared','success');
+  }
+</script>
+</body>
+</html>

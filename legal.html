@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Legal — NeilHunter</title>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D89GTNK2C9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-D89GTNK2C9');
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent: #14b8a6;
+      --font-body: 'DM Sans', sans-serif;
+      --font-serif: 'Instrument Serif', serif;
+    }
+    body {
+      font-family: var(--font-body);
+      background: #0d0d0f;
+      color: #f0f0f2;
+      line-height: 1.7;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,13,15,.95);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      padding: 0 24px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      backdrop-filter: blur(10px);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-text { font-size: 16px; font-weight: 700; color: #fff; }
+    .nav-back {
+      font-size: 13px; color: rgba(255,255,255,.5);
+      text-decoration: none; transition: color .15s;
+    }
+    .nav-back:hover { color: var(--accent); }
+
+    /* TABS */
+    .tabs {
+      display: flex; gap: 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      padding: 0 24px;
+      background: #0d0d0f;
+      position: sticky; top: 56px; z-index: 99;
+    }
+    .tab {
+      padding: 14px 20px; font-size: 14px; font-weight: 500;
+      color: rgba(255,255,255,.4); cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all .15s; background: none; border-top: none;
+      border-left: none; border-right: none;
+      font-family: var(--font-body);
+    }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab:hover { color: #fff; }
+
+    /* CONTENT */
+    .page { display: none; max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+    .page.active { display: block; }
+
+    .doc-title {
+      font-family: var(--font-serif);
+      font-size: 36px; font-weight: 400;
+      margin-bottom: 8px; line-height: 1.2;
+    }
+    .doc-meta {
+      font-size: 13px; color: rgba(255,255,255,.4);
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    h2 {
+      font-size: 18px; font-weight: 600;
+      color: #fff; margin: 36px 0 12px;
+    }
+    h2:first-of-type { margin-top: 0; }
+
+    p {
+      font-size: 14px; color: rgba(255,255,255,.65);
+      margin-bottom: 14px; line-height: 1.75;
+    }
+
+    ul {
+      margin: 0 0 14px 20px;
+      color: rgba(255,255,255,.65);
+      font-size: 14px; line-height: 1.75;
+    }
+    ul li { margin-bottom: 6px; }
+
+    .highlight {
+      background: rgba(20,184,166,.08);
+      border: 1px solid rgba(20,184,166,.2);
+      border-radius: 10px; padding: 14px 18px;
+      margin: 20px 0; font-size: 13px;
+      color: rgba(255,255,255,.7); line-height: 1.6;
+    }
+    .highlight strong { color: var(--accent); }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .section-divider {
+      border: none; border-top: 1px solid rgba(255,255,255,.07);
+      margin: 32px 0;
+    }
+
+    .contact-box {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px; padding: 20px 24px;
+      margin-top: 32px;
+    }
+    .contact-box h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .contact-box p { margin-bottom: 4px; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
+    <span class="nav-logo-text">NeilHunter</span>
+  </a>
+  <a href="index.html" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('privacy')">Privacy Policy</button>
+  <button class="tab" onclick="showTab('terms')">Terms of Service</button>
+</div>
+
+<!-- PRIVACY POLICY -->
+<div class="page active" id="privacy">
+  <div class="doc-title">Privacy Policy</div>
+  <div class="doc-meta">Last updated: May 26, 2026 · Effective immediately</div>
+
+  <div class="highlight">
+    <strong>Summary:</strong> We collect only what we need to run NeilHunter. We never sell your data. You can delete your account and all your data at any time.
+  </div>
+
+  <h2>1. Who We Are</h2>
+  <p>NeilHunter ("we", "us", "our") is a lead generation platform that helps freelancers and web designers find local businesses that need their services. Our website is located at <a href="https://neilhunter.name.ng">neilhunter.name.ng</a>.</p>
+
+  <h2>2. What Data We Collect</h2>
+  <p>When you create an account and use NeilHunter, we collect:</p>
+  <ul>
+    <li><strong>Account information</strong> — your name, email address, and password (stored securely via Firebase Authentication)</li>
+    <li><strong>Usage data</strong> — number of searches performed each day, plan type (FREE, Starter, or Pro)</li>
+    <li><strong>Payment information</strong> — plan selected, payment method (card or bank transfer), and payment reference number. We do NOT store your card details — payments are processed by Paystack</li>
+    <li><strong>Device information</strong> — browser type and device type for improving user experience</li>
+  </ul>
+
+  <h2>3. How We Use Your Data</h2>
+  <ul>
+    <li>To create and manage your account</li>
+    <li>To enforce your plan limits (search quotas)</li>
+    <li>To process and verify your payments</li>
+    <li>To send you account-related emails (verification, plan updates)</li>
+    <li>To improve the platform</li>
+  </ul>
+  <p>We do <strong>not</strong> use your data for advertising, and we do <strong>not</strong> sell your data to any third party.</p>
+
+  <h2>4. Data Storage</h2>
+  <p>Your data is stored securely using <strong>Google Firebase Firestore</strong>, located in the United States. Firebase complies with GDPR and industry-standard security practices. Your password is never stored in plain text.</p>
+
+  <h2>5. Third-Party Services</h2>
+  <p>NeilHunter uses the following third-party services:</p>
+  <ul>
+    <li><strong>Firebase (Google)</strong> — authentication and database storage</li>
+    <li><strong>Paystack</strong> — payment processing</li>
+    <li><strong>Google Maps API</strong> — business search results</li>
+    <li><strong>OpenAI</strong> — AI-powered business analysis</li>
+    <li><strong>EmailJS</strong> — transactional email notifications</li>
+  </ul>
+  <p>Each of these services has their own privacy policies which govern how they handle data.</p>
+
+  <h2>6. Cookies</h2>
+  <p>NeilHunter uses minimal browser storage (localStorage and sessionStorage) to remember your login session, theme preference, and plan information.We use Google Analytics to understand how users interact with our platform. We may also use Meta (Facebook) Pixel for advertising purposes.</p>
+
+  <h2>7. Your Rights</h2>
+  <p>You have the right to:</p>
+  <ul>
+    <li>Access the data we hold about you</li>
+    <li>Correct inaccurate data</li>
+    <li>Delete your account and all associated data</li>
+    <li>Export your data</li>
+  </ul>
+  <p>To exercise any of these rights, contact us at <a href="mailto:neilhuntersupport@gmail.com">neilhuntersupport@gmail.com</a>.</p>
+
+  <h2>8. Data Retention</h2>
+  <p>We retain your account data for as long as your account is active. If you delete your account, we will remove your personal data within 30 days.</p>
+
+  <h2>9. Children's Privacy</h2>
+  <p>NeilHunter is not intended for users under the age of 13. We do not knowingly collect data from children.</p>
+
+  <h2>10. Changes to This Policy</h2>
+  <p>We may update this Privacy Policy from time to time. We will notify you of significant changes by email or through a notice on the platform.</p>
+
+  <hr class="section-divider"/>
+
+  <div class="contact-box">
+    <h3>Contact Us</h3>
+    <p>If you have questions about this Privacy Policy:</p>
+    <p>📧 <a href="mailto:neilhuntersupport@gmail.com">neilhuntersupport@gmail.com</a></p>
+    <p>🌐 <a href="https://neilhunter.name.ng">neilhunter.name.ng</a></p>
+  </div>
+</div>
+
+<!-- TERMS OF SERVICE -->
+<div class="page" id="terms">
+  <div class="doc-title">Terms of Service</div>
+  <div class="doc-meta">Last updated: May 26, 2026 · Effective immediately</div>
+
+  <div class="highlight">
+    <strong>Summary:</strong> Use NeilHunter fairly and legally. Don't abuse the platform or steal data. We can suspend accounts that violate these terms.
+  </div>
+
+  <h2>1. Acceptance of Terms</h2>
+  <p>By creating an account or using NeilHunter, you agree to these Terms of Service. If you do not agree, please do not use the platform.</p>
+
+  <h2>2. Description of Service</h2>
+  <p>NeilHunter is a lead generation tool that helps freelancers and web designers discover local businesses via Google Maps data. The platform provides lead scoring, AI-powered business analysis, and outreach message generation.</p>
+
+  <h2>3. Account Responsibilities</h2>
+  <ul>
+    <li>You must provide accurate information when creating your account</li>
+    <li>You are responsible for keeping your password secure</li>
+    <li>You must be at least 13 years old to use NeilHunter</li>
+    <li>One account per person — creating multiple accounts to bypass search limits is prohibited</li>
+  </ul>
+
+  <h2>4. Acceptable Use</h2>
+  <p>You agree NOT to:</p>
+  <ul>
+    <li>Use NeilHunter for any illegal purpose</li>
+    <li>Scrape, copy, or redistribute our data or platform code</li>
+    <li>Attempt to bypass search limits or abuse the free plan</li>
+    <li>Use automated bots or scripts to access the platform</li>
+    <li>Harass, spam, or send unsolicited messages to businesses found on our platform</li>
+    <li>Reverse engineer or attempt to access our backend systems</li>
+  </ul>
+
+  <h2>5. Plans and Payments</h2>
+  <ul>
+    <li>Free plan includes 10 searches per day at no cost</li>
+    <li>Paid plans (Starter and Pro) are billed monthly or yearly as selected</li>
+    <li>Payments are processed by Paystack and are subject to their terms</li>
+    <li>Plan upgrades are activated after admin verification of payment</li>
+    <li>We reserve the right to change pricing with 30 days notice</li>
+  </ul>
+
+  <h2>6. Refund Policy</h2>
+  <p>Due to the digital nature of our service, all payments are non-refundable once a plan has been activated. If you believe there has been an error in your payment, contact us within 7 days at <a href="mailto:neilhuntersupport@gmail.com">neilhuntersupport@gmail.com</a>.</p>
+
+  <h2>7. Plan Expiry</h2>
+  <p>Paid plans expire after the billing period (1 month or 1 year). If a plan is not renewed, the account automatically reverts to the FREE plan. No data is lost when a plan expires.</p>
+
+  <h2>8. Intellectual Property</h2>
+  <p>All content, design, code, and branding on NeilHunter belongs to us. You may not copy, reproduce, or redistribute any part of the platform without written permission.</p>
+
+  <h2>9. Disclaimer</h2>
+  <p>NeilHunter provides business data sourced from Google Maps. We do not guarantee the accuracy or completeness of this data. The platform is provided "as is" without warranties of any kind. We are not responsible for the outcome of any business pitches or outreach messages sent using our platform.</p>
+
+  <h2>10. Limitation of Liability</h2>
+  <p>To the maximum extent permitted by law, NeilHunter shall not be liable for any indirect, incidental, or consequential damages arising from your use of the platform. Our total liability shall not exceed the amount you paid us in the 3 months prior to the claim.</p>
+
+  <h2>11. Termination</h2>
+  <p>We reserve the right to suspend or terminate accounts that violate these Terms of Service without prior notice. You may delete your account at any time from the Profile page.</p>
+
+  <h2>12. Governing Law</h2>
+  <p>These Terms are governed by the laws of the Federal Republic of Nigeria. Any disputes shall be resolved in Nigerian courts.</p>
+
+  <h2>13. Changes to Terms</h2>
+  <p>We may update these Terms at any time. Continued use of NeilHunter after changes are posted constitutes acceptance of the new Terms.</p>
+
+  <hr class="section-divider"/>
+
+  <div class="contact-box">
+    <h3>Contact Us</h3>
+    <p>Questions about these Terms?</p>
+    <p>📧 <a href="mailto:neilhuntersupport@gmail.com">neilhuntersupport@gmail.com</a></p>
+    <p>🌐 <a href="https://neilhunter.name.ng">neilhunter.name.ng</a></p>
+  </div>
+</div>
+
+<script>
+  function showTab(tab) {
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+    document.getElementById(tab).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+</script>
+</body>
+</html>

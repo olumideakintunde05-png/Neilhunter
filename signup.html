@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account — NeilHunter</title>
+  <link rel="stylesheet" href="style.css"/>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D89GTNK2C9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-D89GTNK2C9');
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon.png">
+  <meta name="theme-color" content="#0d1f1a">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <style>
+    #nh-loader {
+      position:fixed;inset:0;z-index:9999;
+      background:#0d1f1a;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      transition:opacity .5s ease, visibility .5s ease;
+    }
+    #nh-loader .ld-logo { display:flex;align-items:center;gap:10px;margin-bottom:22px; }
+    #nh-loader .ld-icon {
+      width:32px;height:32px;border-radius:8px;
+      background:rgba(20,184,166,.15);border:1px solid rgba(20,184,166,.35);
+      display:flex;align-items:center;justify-content:center;
+    }
+    #nh-loader .ld-name { font-family:'Instrument Serif',serif;font-size:26px;color:#fff;letter-spacing:-.01em; }
+    #nh-loader .ld-track { width:180px;height:3px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin-bottom:12px; }
+    #nh-loader-bar { height:100%;width:0%;background:linear-gradient(90deg,#14b8a6,#2dd4bf);border-radius:99px;transition:width .15s ease; }
+    #nh-loader .ld-label { display:flex;align-items:center;gap:6px; }
+    #nh-loader .ld-text { font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(255,255,255,.35);letter-spacing:.04em; }
+    #nh-loader-pct { font-family:'JetBrains Mono',monospace;font-size:12px;color:#14b8a6;min-width:32px; }
+    .strength-bar { display: flex; align-items: center; gap: 10px; }
+    .strength-track { flex: 1; height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 2px; transition: width .3s, background .3s; }
+    .strength-label { font-size: 11px; color: var(--text-soft); width: 42px; text-align: right; }
+  </style>
+</head>
+<body class="dark">
+
+<!-- LOADER -->
+<div id="nh-loader">
+  <div class="ld-logo">
+    <div class="ld-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </div>
+    <span class="ld-name">NeilHunter</span>
+  </div>
+  <div class="ld-track"><div id="nh-loader-bar"></div></div>
+  <div class="ld-label">
+    <span class="ld-text">Loading</span>
+    <span id="nh-loader-pct">0%</span>
+  </div>
+</div>
+
+<div class="auth-page">
+  <div class="auth-card">
+    <a href="index.html" class="auth-logo">
+      <div class="auth-logo-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+      NeilHunter
+    </a>
+    <div class="auth-box">
+      <h1>Create your account</h1>
+      <p class="auth-sub">Start finding web design leads for free</p>
+
+      <div class="auth-perks">
+        <div class="auth-perk">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          10 free searches per day, forever
+        </div>
+        <div class="auth-perk">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Lead scoring &amp; website detection
+        </div>
+        <div class="auth-perk">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          CSV export included
+        </div>
+      </div>
+
+      <div id="authError" class="auth-error"></div>
+
+      <div class="form-group">
+        <label>Full name</label>
+        <input type="text" id="name" placeholder="Your name" autocomplete="name"/>
+      </div>
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <input type="password" id="password" placeholder="Min. 6 characters" autocomplete="new-password" oninput="checkStrength(this.value)"/>
+          <button class="toggle-pwd" type="button" onclick="togglePwd()" tabindex="-1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="strength-bar" id="strengthBar" style="margin-top:8px;display:none">
+          <div class="strength-track"><div class="strength-fill" id="strengthFill"></div></div>
+          <span class="strength-label" id="strengthLabel"></span>
+        </div>
+      </div>
+
+      <button class="form-submit" id="submitBtn" onclick="doSignup()">
+        <span id="btnText">Create free account</span>
+      </button>
+    </div>
+    <p class="auth-footer">Already have an account? <a href="login.html">Sign in</a></p>
+  </div>
+</div>
+
+<script>
+  /* ── LOADER ── */
+  (function(){
+    var loader = document.getElementById('nh-loader');
+    var bar    = document.getElementById('nh-loader-bar');
+    var pct    = document.getElementById('nh-loader-pct');
+    var current = 0, target = 0, done = false;
+    function setTarget(v){ target = Math.min(v, done ? 100 : 92); }
+    setTarget(30); setTimeout(function(){ setTarget(60); }, 200); setTimeout(function(){ setTarget(80); }, 500);
+    function tick(){
+      if(current < target){ current = Math.min(current + (target - current) * 0.12 + 0.4, target); bar.style.width = current.toFixed(1)+'%'; pct.textContent = Math.round(current)+'%'; }
+      if(!done || current < 100) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    function finish(){ done=true; target=100; setTimeout(function(){ loader.style.opacity='0'; loader.style.visibility='hidden'; setTimeout(function(){ loader.remove(); },520); },300); }
+    if(document.readyState==='complete'){ finish(); } else { window.addEventListener('load',finish); setTimeout(finish,4000); }
+  })();
+</script>
+<script src="auth.js"></script>
+<script>
+  if (localStorage.getItem('nh_theme') === 'light') document.body.classList.replace('dark','light');
+  Auth.onSession(user => { if (user && user.emailVerified) window.location.href = 'dashboard.html'; });
+
+  function togglePwd() {
+    const inp = document.getElementById('password');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+
+  function checkStrength(val) {
+    const bar   = document.getElementById('strengthBar');
+    const fill  = document.getElementById('strengthFill');
+    const label = document.getElementById('strengthLabel');
+    if (!val) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+    let s = 0;
+    if (val.length >= 6)  s++;
+    if (val.length >= 10) s++;
+    if (/[A-Z]/.test(val)) s++;
+    if (/[0-9]/.test(val)) s++;
+    if (/[^a-zA-Z0-9]/.test(val)) s++;
+    const pct = [20,40,60,80,100][Math.min(s,4)];
+    const clr = ['#f87171','#fbbf24','#fbbf24','#34d399','#14b8a6'][Math.min(s,4)];
+    const txt = ['Weak','Fair','Fair','Good','Strong'][Math.min(s,4)];
+    fill.style.width = pct + '%';
+    fill.style.background = clr;
+    label.textContent = txt;
+    label.style.color = clr;
+  }
+
+  async function doSignup() {
+    const name     = document.getElementById('name').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    if (!name)               { showErr('Please enter your name.'); return; }
+    if (!email)              { showErr('Please enter your email.'); return; }
+    if (password.length < 6) { showErr('Password must be at least 6 characters.'); return; }
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('btnText').textContent = 'Creating account…';
+    const res = await Auth.register(name, email, password);
+    if (res.ok) {
+      await Auth.sendVerification();
+      document.getElementById('submitBtn').disabled = false;
+      document.getElementById('btnText').textContent = 'Create free account';
+      showVerifyScreen(email);
+    } else {
+      showErr(res.error);
+      document.getElementById('submitBtn').disabled = false;
+      document.getElementById('btnText').textContent = 'Create free account';
+    }
+  }
+
+  function showErr(msg) { const el = document.getElementById('authError'); el.textContent = msg; el.style.display = 'block'; }
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); });
+
+  function showVerifyScreen(email) {
+    document.querySelector('.auth-box').innerHTML = `
+      <div style="text-align:center;padding:16px 0">
+        <div style="width:64px;height:64px;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <h2 style="font-size:20px;font-weight:700;margin-bottom:8px">Check your email</h2>
+        <p style="font-size:13px;color:var(--text-soft);line-height:1.6;margin-bottom:24px">
+          We sent a verification link to<br>
+          <strong style="color:var(--text)">${email}</strong><br><br>
+          Click the link in the email to verify your account, then come back and sign in.
+        </p>
+        <button onclick="resendVerification()" style="display:block;width:100%;padding:13px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:10px;color:var(--text-soft);font-size:13px;cursor:pointer;font-family:var(--font-body);margin-top:4px;text-decoration:underline">
+          Didn't receive it? Resend email
+        </button>
+      </div>
+    `;
+  }
+
+  async function resendVerification() {
+    await Auth.sendVerification();
+    alert('Verification email resent! Check your inbox.');
+  }
+</script>
+</body>
+</html>

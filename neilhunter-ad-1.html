@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NeilHunter Ad</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --teal:   #14b8a6;
+    --teal2:  #2dd4bf;
+    --red:    #f87171;
+    --amber:  #fbbf24;
+    --green:  #34d399;
+    --bg:     #060e0c;
+    --bg2:    #0d1f1a;
+    --card:   rgba(13,31,26,.95);
+  }
+
+  html, body {
+    width:100%; height:100%;
+    background:#000;
+    font-family:'DM Sans',sans-serif;
+    overflow:hidden;
+    cursor:none;
+  }
+
+  /* ═══ STAGE ═══ */
+  #stage {
+    width:390px; height:844px; /* iPhone 14 ratio */
+    margin:0 auto;
+    position:relative;
+    background:var(--bg);
+    overflow:hidden;
+  }
+
+  /* ── PARTICLE CANVAS ── */
+  #bg-canvas {
+    position:absolute;inset:0;width:100%;height:100%;
+    pointer-events:none;z-index:0;
+  }
+
+  /* ── SCAN LINE ── */
+  .scan {
+    position:absolute;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent 0%,var(--teal) 40%,var(--teal2) 60%,transparent 100%);
+    z-index:1;opacity:0;
+    animation:scanRun 3s linear infinite 0.5s;
+  }
+  @keyframes scanRun {
+    0%  { top:-2px; opacity:0; }
+    5%  { opacity:.8; }
+    95% { opacity:.5; }
+    100%{ top:100%; opacity:0; }
+  }
+
+  /* ── GRID OVERLAY ── */
+  .grid-overlay {
+    position:absolute;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(20,184,166,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20,184,166,.04) 1px, transparent 1px);
+    background-size:40px 40px;
+    opacity:0;
+    animation:gridFadeIn 1s ease 0.2s forwards;
+  }
+  @keyframes gridFadeIn { to { opacity:1; } }
+
+  /* ══════════════════════════════════
+     SCENE SYSTEM
+  ══════════════════════════════════ */
+  .scene {
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    z-index:10;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .4s ease;
+  }
+  .scene.active { opacity:1; pointer-events:all; }
+
+  /* ══════════════════════════════════
+     SCENE 1 — HOOK
+  ══════════════════════════════════ */
+  #scene1 {
+    background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(20,184,166,.12) 0%, transparent 70%);
+  }
+
+  .hook-eyebrow {
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--teal);
+    margin-bottom:20px;
+    opacity:0;
+    animation:none;
+  }
+
+  .hook-headline {
+    font-family:'Instrument Serif',serif;
+    font-size:52px;line-height:1.05;
+    color:#fff;
+    text-align:center;
+    padding:0 30px;
+  }
+  .hook-headline em {
+    font-style:italic;
+    color:var(--teal2);
+    display:block;
+  }
+
+  .hook-sub {
+    margin-top:18px;
+    font-size:15px;color:rgba(255,255,255,.5);
+    text-align:center;padding:0 40px;line-height:1.6;
+  }
+
+  /* glitch effect on headline */
+  .glitch {
+    position:relative;
+    animation:glitchBase 4s ease-in-out infinite 2s;
+  }
+  .glitch::before, .glitch::after {
+    content:attr(data-text);
+    position:absolute;top:0;left:0;width:100%;
+    font-family:'Instrument Serif',serif;
+    font-size:52px;line-height:1.05;
+    text-align:center;padding:0 30px;
+  }
+  .glitch::before {
+    color:var(--teal);
+    animation:glitchTop 4s ease-in-out infinite 2s;
+    clip-path:polygon(0 0, 100% 0, 100% 35%, 0 35%);
+  }
+  .glitch::after {
+    color:var(--red);
+    animation:glitchBot 4s ease-in-out infinite 2s;
+    clip-path:polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+  }
+  @keyframes glitchBase {
+    0%,90%,100% { transform:translate(0); }
+    92% { transform:translate(-2px,1px); }
+    94% { transform:translate(2px,-1px); }
+    96% { transform:translate(-1px,2px); }
+    98% { transform:translate(1px,-2px); }
+  }
+  @keyframes glitchTop {
+    0%,90%,100% { transform:translate(0); opacity:0; }
+    92% { transform:translate(3px,0); opacity:.7; }
+    94% { transform:translate(-3px,0); opacity:.6; }
+    96% { opacity:0; }
+  }
+  @keyframes glitchBot {
+    0%,90%,100% { transform:translate(0); opacity:0; }
+    93% { transform:translate(-3px,0); opacity:.7; }
+    95% { transform:translate(3px,0); opacity:.6; }
+    97% { opacity:0; }
+  }
+
+  /* big teal orb */
+  .hero-orb {
+    position:absolute;
+    border-radius:50%;pointer-events:none;
+    filter:blur(80px);
+    width:300px;height:300px;
+    background:radial-gradient(circle,rgba(20,184,166,.22) 0%,transparent 70%);
+    top:-60px;left:50%;transform:translateX(-50%);
+    animation:orbPulse 5s ease-in-out infinite;
+  }
+  @keyframes orbPulse {
+    0%,100%{ transform:translateX(-50%) scale(1); opacity:.8; }
+    50%    { transform:translateX(-50%) scale(1.15); opacity:1; }
+  }
+
+  /* scene 1 reveal animations */
+  .s1-anim1 { opacity:0; animation:s1Up .7s cubic-bezier(.16,1,.3,1) forwards; }
+  .s1-anim2 { opacity:0; animation:s1Up .7s cubic-bezier(.16,1,.3,1) .15s forwards; }
+  .s1-anim3 { opacity:0; animation:s1Up .7s cubic-bezier(.16,1,.3,1) .3s forwards; }
+  @keyframes s1Up {
+    from { opacity:0; transform:translateY(30px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* ══════════════════════════════════
+     SCENE 2 — THE PROBLEM
+  ══════════════════════════════════ */
+  #scene2 { padding:40px 28px; justify-content:flex-start; padding-top:80px; }
+
+  .problem-label {
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:.18em;color:var(--red);
+    text-transform:uppercase;margin-bottom:16px;
+    opacity:0;animation:s1Up .5s ease forwards;
+  }
+  .problem-title {
+    font-family:'Instrument Serif',serif;
+    font-size:36px;line-height:1.1;color:#fff;
+    margin-bottom:32px;
+    opacity:0;animation:s1Up .5s ease .1s forwards;
+  }
+  .problem-title span { color:var(--red); }
+
+  /* Business cards with NO WEBSITE stamp */
+  .biz-list { width:100%;display:flex;flex-direction:column;gap:14px; }
+
+  .biz-card {
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:16px 18px;
+    display:flex;align-items:center;gap:14px;
+    opacity:0;
+    transform:translateX(-40px);
+    transition:opacity .5s ease, transform .5s ease;
+    position:relative;overflow:hidden;
+  }
+  .biz-card.show { opacity:1;transform:translateX(0); }
+
+  .biz-avatar {
+    width:44px;height:44px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;flex-shrink:0;
+  }
+  .biz-info { flex:1; }
+  .biz-name { font-size:14px;font-weight:600;color:#fff;margin-bottom:3px; }
+  .biz-meta { font-size:11px;color:rgba(255,255,255,.4); }
+
+  .biz-status {
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;font-weight:700;
+    padding:4px 10px;border-radius:99px;
+    flex-shrink:0;
+    opacity:0;
+    transform:scale(0);
+    transition:opacity .4s ease .2s, transform .4s cubic-bezier(.34,1.56,.64,1) .2s;
+  }
+  .biz-card.show .biz-status { opacity:1;transform:scale(1); }
+  .status-none  { background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3); }
+  .status-bad   { background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25); }
+
+  /* STAMP overlay */
+  .stamp {
+    position:absolute;
+    top:50%;right:16px;
+    transform:translateY(-50%) rotate(-12deg) scale(0);
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;font-weight:700;letter-spacing:.1em;
+    color:var(--red);
+    border:2px solid var(--red);
+    padding:4px 10px;border-radius:4px;
+    opacity:0;
+    transition:opacity .3s ease .6s, transform .3s cubic-bezier(.34,1.56,.64,1) .6s;
+    text-transform:uppercase;
+  }
+  .biz-card.show .stamp { opacity:.85;transform:translateY(-50%) rotate(-12deg) scale(1); }
+
+  /* ══════════════════════════════════
+     SCENE 3 — SOLUTION / DEMO
+  ══════════════════════════════════ */
+  #scene3 { padding:32px 24px; justify-content:flex-start; padding-top:60px; }
+
+  .sol-label {
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:.18em;color:var(--teal);
+    text-transform:uppercase;margin-bottom:14px;
+    opacity:0;animation:s1Up .5s ease forwards;
+  }
+  .sol-title {
+    font-family:'Instrument Serif',serif;
+    font-size:34px;line-height:1.1;color:#fff;
+    margin-bottom:24px;
+    opacity:0;animation:s1Up .5s ease .1s forwards;
+  }
+  .sol-title em { font-style:italic;color:var(--teal2); }
+
+  /* Dashboard mockup */
+  .dash-wrap {
+    width:100%;
+    background:var(--card);
+    border:1px solid rgba(20,184,166,.2);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 24px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(20,184,166,.1);
+    opacity:0;
+    transform:translateY(30px) scale(.97);
+    transition:opacity .6s ease .2s, transform .6s cubic-bezier(.16,1,.3,1) .2s;
+  }
+  .dash-wrap.show { opacity:1;transform:translateY(0) scale(1); }
+
+  .dash-bar {
+    background:rgba(20,184,166,.06);
+    border-bottom:1px solid rgba(20,184,166,.12);
+    padding:10px 14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .dash-dots { display:flex;gap:5px; }
+  .dash-dot  { width:9px;height:9px;border-radius:50%; }
+  .dash-url  {
+    flex:1;background:rgba(0,0,0,.3);border-radius:6px;
+    padding:4px 10px;font-family:'JetBrains Mono',monospace;
+    font-size:10px;color:rgba(255,255,255,.4);
+  }
+
+  .dash-search {
+    display:flex;gap:8px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);
+  }
+  .dash-input {
+    flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(20,184,166,.3);
+    border-radius:8px;padding:8px 12px;
+    font-size:12px;color:rgba(255,255,255,.7);
+    display:flex;align-items:center;gap:6px;
+  }
+  .dash-input-cursor {
+    display:inline-block;width:1px;height:13px;
+    background:var(--teal);
+    animation:blink .8s step-end infinite;
+  }
+  @keyframes blink { 50%{opacity:0;} }
+  .dash-btn {
+    background:var(--teal);border-radius:8px;
+    padding:8px 14px;font-size:12px;font-weight:600;color:#000;
+    display:flex;align-items:center;gap:5px;flex-shrink:0;
+  }
+
+  /* Stats row */
+  .dash-stats {
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+    padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);
+  }
+  .stat-box {
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+    border-radius:8px;padding:10px 8px;text-align:center;
+    opacity:0;transform:translateY(10px);
+    transition:opacity .4s ease, transform .4s ease;
+  }
+  .stat-box.show { opacity:1;transform:translateY(0); }
+  .stat-num { font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;line-height:1; }
+  .stat-lbl { font-size:9px;color:rgba(255,255,255,.4);margin-top:3px;text-transform:uppercase;letter-spacing:.06em; }
+
+  /* Result rows */
+  .dash-results { padding:0 14px 14px; }
+  .result-row {
+    display:grid;grid-template-columns:1fr auto auto;gap:8px;
+    align-items:center;padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,.04);
+    opacity:0;transform:translateX(-10px);
+    transition:opacity .4s ease, transform .4s ease;
+  }
+  .result-row.show { opacity:1;transform:translateX(0); }
+  .result-row:last-child { border-bottom:none; }
+  .r-name { font-size:12px;font-weight:500;color:#fff; }
+  .r-sub  { font-size:10px;color:rgba(255,255,255,.35); }
+  .r-tag  { font-size:9px;padding:3px 7px;border-radius:99px;font-weight:600; }
+  .r-score { font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700; }
+
+  /* ══════════════════════════════════
+     SCENE 4 — SCORE RING CLOSE-UP
+  ══════════════════════════════════ */
+  #scene4 {
+    background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(20,184,166,.15) 0%,transparent 70%);
+  }
+
+  .ring-scene {
+    display:flex;flex-direction:column;align-items:center;
+    gap:28px;
+  }
+
+  .ring-label {
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;letter-spacing:.2em;color:var(--teal);
+    text-transform:uppercase;
+    opacity:0;animation:s1Up .5s ease forwards;
+  }
+
+  .ring-wrap {
+    position:relative;
+    width:220px;height:220px;
+    opacity:0;animation:s1Up .6s ease .1s forwards;
+  }
+  .ring-wrap svg { width:220px;height:220px; }
+
+  .ring-center {
+    position:absolute;top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+  }
+  #big-score-num {
+    font-family:'JetBrains Mono',monospace;
+    font-size:64px;font-weight:700;color:#fff;line-height:1;
+    text-shadow:0 0 40px rgba(20,184,166,.6);
+  }
+  .ring-sub { font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-top:4px; }
+
+  /* outer glow rings */
+  .ring-glow {
+    position:absolute;top:50%;left:50%;
+    border-radius:50%;border:1px solid rgba(20,184,166,.2);
+    animation:ringExpand 2.5s ease-out infinite;
+    pointer-events:none;
+  }
+  .ring-glow:nth-child(1) { width:230px;height:230px;margin:-115px 0 0 -115px;animation-delay:0s; }
+  .ring-glow:nth-child(2) { width:260px;height:260px;margin:-130px 0 0 -130px;animation-delay:.6s; }
+  .ring-glow:nth-child(3) { width:290px;height:290px;margin:-145px 0 0 -145px;animation-delay:1.2s; }
+  @keyframes ringExpand {
+    0%  { opacity:.8;transform:scale(.85); }
+    100%{ opacity:0; transform:scale(1.1); }
+  }
+
+  .ring-caption {
+    font-family:'Instrument Serif',serif;
+    font-size:26px;color:#fff;text-align:center;
+    padding:0 40px;line-height:1.3;
+    opacity:0;animation:s1Up .6s ease .3s forwards;
+  }
+  .ring-caption em { color:var(--teal2);font-style:italic; }
+
+  /* ══════════════════════════════════
+     SCENE 5 — CTA
+  ══════════════════════════════════ */
+  #scene5 {
+    background:radial-gradient(ellipse 90% 60% at 50% 40%,rgba(20,184,166,.18) 0%,transparent 65%);
+  }
+
+  .cta-badge {
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:.18em;color:var(--teal);text-transform:uppercase;
+    margin-bottom:16px;opacity:0;animation:s1Up .5s ease forwards;
+  }
+  .cta-big {
+    font-family:'Instrument Serif',serif;
+    font-size:54px;line-height:1;color:#fff;text-align:center;
+    padding:0 24px;margin-bottom:10px;
+    opacity:0;animation:s1Up .6s ease .1s forwards;
+  }
+  .cta-big em { font-style:italic;color:var(--teal2);display:block; }
+
+  .cta-sub {
+    font-size:14px;color:rgba(255,255,255,.45);
+    text-align:center;padding:0 36px;line-height:1.6;margin-bottom:36px;
+    opacity:0;animation:s1Up .5s ease .2s forwards;
+  }
+
+  .cta-btn {
+    display:flex;align-items:center;gap:10px;
+    background:var(--teal);
+    color:#000;font-weight:700;font-size:16px;
+    padding:16px 36px;border-radius:99px;
+    box-shadow:0 0 40px rgba(20,184,166,.4), 0 0 80px rgba(20,184,166,.15);
+    opacity:0;animation:s1Up .5s ease .35s forwards;
+    position:relative;overflow:hidden;
+  }
+  .cta-btn::after {
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+    transform:translateX(-100%);
+    animation:btnShimmer 2s ease-in-out infinite 1s;
+  }
+  @keyframes btnShimmer {
+    0%   { transform:translateX(-100%); }
+    100% { transform:translateX(100%); }
+  }
+
+  .cta-note {
+    margin-top:16px;font-size:11px;color:rgba(255,255,255,.3);
+    text-align:center;letter-spacing:.04em;
+    opacity:0;animation:s1Up .5s ease .5s forwards;
+  }
+
+  /* social proof pills */
+  .proof-row {
+    display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;justify-content:center;
+    opacity:0;animation:s1Up .5s ease .25s forwards;
+  }
+  .proof-pill {
+    background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.2);
+    border-radius:99px;padding:6px 14px;
+    font-size:11px;color:rgba(255,255,255,.6);
+    display:flex;align-items:center;gap:5px;
+  }
+  .proof-pill strong { color:var(--teal);font-weight:600; }
+
+  /* ══════════════════════════════════
+     PROGRESS BAR
+  ══════════════════════════════════ */
+  #progress-bar {
+    position:absolute;bottom:0;left:0;right:0;
+    height:3px;background:rgba(255,255,255,.06);z-index:100;
+  }
+  #progress-fill {
+    height:100%;width:0%;
+    background:linear-gradient(90deg,var(--teal),var(--teal2));
+    transition:width .3s ease;
+    box-shadow:0 0 8px var(--teal);
+  }
+
+  /* scene indicator dots */
+  #scene-dots {
+    position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+    display:flex;gap:6px;z-index:100;
+  }
+  .s-dot {
+    width:6px;height:6px;border-radius:50%;
+    background:rgba(255,255,255,.2);
+    transition:background .3s ease, transform .3s ease;
+  }
+  .s-dot.active { background:var(--teal);transform:scale(1.3); }
+
+  /* ── REPLAY BUTTON ── */
+  #replay-btn {
+    position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+    display:none;
+    background:rgba(20,184,166,.15);border:1px solid rgba(20,184,166,.3);
+    color:var(--teal);font-size:13px;font-weight:600;
+    padding:10px 24px;border-radius:99px;cursor:pointer;z-index:200;
+    font-family:'DM Sans',sans-serif;letter-spacing:.04em;
+  }
+
+  /* ── SKIP BUTTON ── */
+  #skip-btn {
+    position:absolute;top:16px;right:16px;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+    color:rgba(255,255,255,.4);font-size:11px;
+    padding:6px 14px;border-radius:99px;cursor:pointer;z-index:200;
+    font-family:'JetBrains Mono',monospace;letter-spacing:.06em;
+    transition:color .2s,background .2s;
+  }
+  #skip-btn:hover { color:#fff;background:rgba(255,255,255,.1); }
+
+  /* centered layout for stage */
+  body { display:flex;align-items:center;justify-content:center;min-height:100vh;background:#000; }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="scan"></div>
+
+  <!-- SCENE 1: HOOK -->
+  <div class="scene active" id="scene1">
+    <div class="hero-orb"></div>
+    <p class="hook-eyebrow s1-anim1">🔴 Live · Lead Detection</p>
+    <h1 class="hook-headline glitch s1-anim2" data-text="Find businesses that">
+      Find businesses that
+      <em>need your services</em>
+    </h1>
+    <p class="hook-sub s1-anim3">
+      Thousands of local businesses have no website.<br/>
+      They're waiting for <em style="color:var(--teal2)">you</em>.
+    </p>
+  </div>
+
+  <!-- SCENE 2: THE PROBLEM -->
+  <div class="scene" id="scene2">
+    <p class="problem-label">The Reality</p>
+    <h2 class="problem-title">Most businesses<br/><span>have no online presence</span></h2>
+    <div class="biz-list">
+      <div class="biz-card" id="biz1">
+        <div class="biz-avatar" style="background:rgba(248,113,113,.1)">🔧</div>
+        <div class="biz-info">
+          <div class="biz-name">Nigeria Pipes Ltd</div>
+          <div class="biz-meta">14 Agege Street, Lagos</div>
+        </div>
+        <div class="biz-status status-none">NO SITE</div>
+        <div class="stamp">LEAD</div>
+      </div>
+      <div class="biz-card" id="biz2">
+        <div class="biz-avatar" style="background:rgba(251,191,36,.1)">🍕</div>
+        <div class="biz-info">
+          <div class="biz-name">Premier Restaurant</div>
+          <div class="biz-meta">5 Market Square, PH</div>
+        </div>
+        <div class="biz-status status-bad">OUTDATED</div>
+        <div class="stamp">LEAD</div>
+      </div>
+      <div class="biz-card" id="biz3">
+        <div class="biz-avatar" style="background:rgba(248,113,113,.1)">💊</div>
+        <div class="biz-info">
+          <div class="biz-name">HealthPlus Pharmacy</div>
+          <div class="biz-meta">22 Marina Rd, Lagos</div>
+        </div>
+        <div class="biz-status status-none">NO SITE</div>
+        <div class="stamp">LEAD</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 3: SOLUTION / DEMO -->
+  <div class="scene" id="scene3">
+    <p class="sol-label">The Solution</p>
+    <h2 class="sol-title">NeilHunter finds them<br/><em>automatically</em></h2>
+    <div class="dash-wrap" id="dashWrap">
+      <div class="dash-bar">
+        <div class="dash-dots">
+          <div class="dash-dot" style="background:rgba(239,68,68,.5)"></div>
+          <div class="dash-dot" style="background:rgba(251,191,36,.5)"></div>
+          <div class="dash-dot" style="background:rgba(52,211,153,.5)"></div>
+        </div>
+        <div class="dash-url">neilhunter.name.ng/dashboard</div>
+      </div>
+      <div class="dash-search">
+        <div class="dash-input">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(20,184,166,.7)" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <span id="typed-text" style="color:rgba(255,255,255,.6);font-size:12px"></span>
+          <span class="dash-input-cursor"></span>
+        </div>
+        <div class="dash-btn">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Hunt
+        </div>
+      </div>
+      <div class="dash-stats">
+        <div class="stat-box" id="st1">
+          <div class="stat-num" style="color:#60a5fa" id="statNum1">0</div>
+          <div class="stat-lbl">Found</div>
+        </div>
+        <div class="stat-box" id="st2">
+          <div class="stat-num" style="color:var(--red)" id="statNum2">0</div>
+          <div class="stat-lbl">No Website</div>
+        </div>
+        <div class="stat-box" id="st3">
+          <div class="stat-num" style="color:var(--amber)" id="statNum3">0</div>
+          <div class="stat-lbl">Hot 🔥</div>
+        </div>
+      </div>
+      <div class="dash-results">
+        <div class="result-row" id="r1">
+          <div><div class="r-name">Nigeria Pipes Ltd</div><div class="r-sub">Lagos · ⭐ 3.2</div></div>
+          <div class="r-tag" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">NO SITE</div>
+          <div class="r-score" style="color:var(--red)">82</div>
+        </div>
+        <div class="result-row" id="r2">
+          <div><div class="r-name">Fast Plumbing Co.</div><div class="r-sub">Lagos · ⭐ 2.8</div></div>
+          <div class="r-tag" style="background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25)">OUTDATED</div>
+          <div class="r-score" style="color:var(--amber)">67</div>
+        </div>
+        <div class="result-row" id="r3">
+          <div><div class="r-name">HealthPlus Pharmacy</div><div class="r-sub">PH · ⭐ 4.1</div></div>
+          <div class="r-tag" style="background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)">NO SITE</div>
+          <div class="r-score" style="color:var(--red)">79</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 4: SCORE RING -->
+  <div class="scene" id="scene4">
+    <div class="ring-glow"></div>
+    <div class="ring-glow"></div>
+    <div class="ring-glow"></div>
+    <div class="ring-scene">
+      <p class="ring-label">Lead Score System</p>
+      <div class="ring-wrap">
+        <svg viewBox="0 0 220 220">
+          <circle cx="110" cy="110" r="90" fill="none" stroke="rgba(20,184,166,.08)" stroke-width="14"/>
+          <circle cx="110" cy="110" r="90" fill="none" stroke="url(#ringGrad)" stroke-width="14"
+            stroke-linecap="round"
+            stroke-dasharray="565.5"
+            stroke-dashoffset="565.5"
+            id="big-arc"
+            style="transition:stroke-dashoffset 2s cubic-bezier(.4,0,.2,1);transform:rotate(-90deg);transform-origin:110px 110px;"/>
+          <defs>
+            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#14b8a6"/>
+              <stop offset="100%" style="stop-color:#2dd4bf"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="ring-center">
+          <div id="big-score-num">0</div>
+          <div class="ring-sub">Lead Score</div>
+        </div>
+      </div>
+      <p class="ring-caption">The higher the score,<br/><em>the hotter the lead</em></p>
+    </div>
+  </div>
+
+  <!-- SCENE 5: CTA -->
+  <div class="scene" id="scene5">
+    <p class="cta-badge">🚀 Start Today — It's Free</p>
+    <h2 class="cta-big">Stop searching.<br/><em>Start hunting.</em></h2>
+    <p class="cta-sub">Find businesses that need a website in any city across Nigeria — in seconds.</p>
+    <div class="proof-row">
+      <div class="proof-pill"><strong>10</strong> free searches/day</div>
+      <div class="proof-pill"><strong>500+</strong> freelancers</div>
+      <div class="proof-pill">No card needed</div>
+    </div>
+    <div class="cta-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Start Hunting Free
+    </div>
+    <p class="cta-note">neilhunter.name.ng</p>
+  </div>
+
+  <!-- UI chrome -->
+  <div id="progress-bar"><div id="progress-fill"></div></div>
+  <div id="scene-dots">
+    <div class="s-dot active"></div>
+    <div class="s-dot"></div>
+    <div class="s-dot"></div>
+    <div class="s-dot"></div>
+    <div class="s-dot"></div>
+  </div>
+  <button id="skip-btn">SKIP ›</button>
+  <button id="replay-btn">↺ Replay</button>
+</div>
+
+<script>
+/* ══════════════════════════════════
+   PARTICLE BG
+══════════════════════════════════ */
+(function(){
+  var canvas = document.getElementById('bg-canvas');
+  var ctx = canvas.getContext('2d');
+  var stage = document.getElementById('stage');
+  var W, H, particles = [];
+
+  function resize(){
+    W = canvas.width  = stage.offsetWidth;
+    H = canvas.height = stage.offsetHeight;
+  }
+  resize();
+
+  for(var i=0;i<55;i++){
+    particles.push({
+      x:Math.random()*390, y:Math.random()*844,
+      r:Math.random()*1.5+0.3,
+      vx:(Math.random()-.5)*.3,
+      vy:(Math.random()-.5)*.2,
+      a:Math.random()*.5+.1,
+      pulse:Math.random()*Math.PI*2
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(function(p){
+      p.x+=p.vx; p.y+=p.vy; p.pulse+=.015;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      var alpha = p.a*(.5+.5*Math.sin(p.pulse));
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(20,184,166,'+alpha.toFixed(2)+')';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ══════════════════════════════════
+   SCENE ENGINE
+══════════════════════════════════ */
+var scenes    = document.querySelectorAll('.scene');
+var dots      = document.querySelectorAll('.s-dot');
+var fill      = document.getElementById('progress-fill');
+var current   = 0;
+var autoTimer = null;
+var DURATIONS = [3200, 3500, 4500, 3500, 99999]; // ms per scene
+
+function goTo(idx){
+  if(idx >= scenes.length){ endAd(); return; }
+
+  scenes[current].classList.remove('active');
+  dots[current].classList.remove('active');
+
+  current = idx;
+  scenes[current].classList.add('active');
+  dots[current].classList.add('active');
+
+  var pct = (current/(scenes.length-1))*100;
+  fill.style.width = pct + '%';
+
+  // Run scene-specific setup
+  sceneSetup(current);
+
+  clearTimeout(autoTimer);
+  if(current < scenes.length - 1){
+    autoTimer = setTimeout(function(){ goTo(current+1); }, DURATIONS[current]);
+  }
+}
+
+function endAd(){
+  document.getElementById('replay-btn').style.display='block';
+  document.getElementById('skip-btn').style.display='none';
+  fill.style.width='100%';
+}
+
+document.getElementById('skip-btn').addEventListener('click', function(){
+  clearTimeout(autoTimer);
+  goTo(current+1);
+});
+document.getElementById('replay-btn').addEventListener('click', function(){
+  document.getElementById('replay-btn').style.display='none';
+  document.getElementById('skip-btn').style.display='block';
+  resetAll();
+  goTo(0);
+});
+
+/* ══════════════════════════════════
+   SCENE SETUP FUNCTIONS
+══════════════════════════════════ */
+function sceneSetup(idx){
+  if(idx===1) setupScene2();
+  if(idx===2) setupScene3();
+  if(idx===3) setupScene4();
+}
+
+/* — Scene 2: stagger business cards — */
+function setupScene2(){
+  var cards = document.querySelectorAll('.biz-card');
+  cards.forEach(function(c){ c.classList.remove('show'); });
+  setTimeout(function(){ document.getElementById('biz1').classList.add('show'); }, 200);
+  setTimeout(function(){ document.getElementById('biz2').classList.add('show'); }, 700);
+  setTimeout(function(){ document.getElementById('biz3').classList.add('show'); }, 1200);
+}
+
+/* — Scene 3: typing + dashboard reveal — */
+var typeInterval = null;
+function setupScene3(){
+  var wrap = document.getElementById('dashWrap');
+  wrap.classList.remove('show');
+  var stats = document.querySelectorAll('.stat-box');
+  var rows  = document.querySelectorAll('.result-row');
+  stats.forEach(function(s){ s.classList.remove('show'); });
+  rows.forEach(function(r){  r.classList.remove('show'); });
+  document.getElementById('statNum1').textContent='0';
+  document.getElementById('statNum2').textContent='0';
+  document.getElementById('statNum3').textContent='0';
+  document.getElementById('typed-text').textContent='';
+
+  // type effect
+  var text = 'gadget stores · Lagos';
+  var i=0;
+  clearInterval(typeInterval);
+  typeInterval = setInterval(function(){
+    if(i <= text.length){
+      document.getElementById('typed-text').textContent = text.slice(0,i);
+      i++;
+    } else { clearInterval(typeInterval); }
+  }, 60);
+
+  // show dashboard
+  setTimeout(function(){ wrap.classList.add('show'); }, 300);
+
+  // stats count up
+  setTimeout(function(){
+    document.getElementById('st1').classList.add('show');
+    countUp('statNum1', 18, 800);
+  }, 900);
+  setTimeout(function(){
+    document.getElementById('st2').classList.add('show');
+    countUp('statNum2', 11, 700);
+  }, 1100);
+  setTimeout(function(){
+    document.getElementById('st3').classList.add('show');
+    countUp('statNum3', 7, 600);
+  }, 1300);
+
+  // result rows
+  setTimeout(function(){ document.getElementById('r1').classList.add('show'); }, 1700);
+  setTimeout(function(){ document.getElementById('r2').classList.add('show'); }, 2000);
+  setTimeout(function(){ document.getElementById('r3').classList.add('show'); }, 2300);
+}
+
+function countUp(id, target, dur){
+  var el = document.getElementById(id);
+  var start = Date.now();
+  var tick = setInterval(function(){
+    var progress = Math.min((Date.now()-start)/dur, 1);
+    el.textContent = Math.round(progress * target);
+    if(progress >= 1) clearInterval(tick);
+  }, 16);
+}
+
+/* — Scene 4: score ring animate — */
+function setupScene4(){
+  var arc    = document.getElementById('big-arc');
+  var numEl  = document.getElementById('big-score-num');
+  var target = 82;
+  var circ   = 565.5;
+
+  arc.style.strokeDashoffset = circ;
+  numEl.textContent = '0';
+
+  setTimeout(function(){
+    arc.style.strokeDashoffset = circ - (target/100)*circ;
+    countUp('big-score-num', target, 1800);
+  }, 400);
+}
+
+/* — Reset all scenes — */
+function resetAll(){
+  document.getElementById('dashWrap').classList.remove('show');
+  document.querySelectorAll('.biz-card').forEach(function(c){ c.classList.remove('show'); });
+  document.querySelectorAll('.stat-box').forEach(function(s){ s.classList.remove('show'); });
+  document.querySelectorAll('.result-row').forEach(function(r){ r.classList.remove('show'); });
+  document.getElementById('big-arc').style.strokeDashoffset='565.5';
+  document.getElementById('big-score-num').textContent='0';
+  clearInterval(typeInterval);
+}
+
+/* — Kick off — */
+goTo(0);
+</script>
+</body>
+</html>
