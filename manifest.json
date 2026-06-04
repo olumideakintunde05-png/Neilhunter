@@ -1,0 +1,20 @@
+{
+  "name": "NeilHunter",
+  "short_name": "NeilHunter",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a1612",
+  "theme_color": "#0fd9b4",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
